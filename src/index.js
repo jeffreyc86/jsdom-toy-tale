@@ -16,8 +16,12 @@ function renderNewToy(toyObject){
     const newButton = document.createElement("button")
       newButton.textContent = "Like <3"
       newButton.className = "like-btn"
+    //delete button start
+    const deleteButton = document.createElement("button")
+      deleteButton.textContent = "X"
+      deleteButton.className = "delete-btn"
 
-      newDiv.append(newH2, newImg, newP, newButton)
+      newDiv.append(newH2, newImg, newP, newButton, deleteButton)
       toyCollection.append(newDiv)
 }
 
@@ -61,11 +65,11 @@ toyForm.addEventListener("submit",(e) => {
 
 
 toyCollection.addEventListener('click', e => {
-  if (e.target.matches('.like-btn')){
-
     const toyCard = e.target.closest("div.card")
     const id = toyCard.dataset.id
 
+  if (e.target.matches('.like-btn')){
+    
     const likesP = e.target.previousElementSibling
     let likesParsed = parseInt(likesP.textContent)
     likesParsed++
@@ -84,6 +88,17 @@ toyCollection.addEventListener('click', e => {
     .then(updatedItem => {
       likesP.textContent = `${updatedItem.likes} Likes`
     })
+  } else if (e.target.matches('.delete-btn')) {
+
+    fetch(`http://localhost:3000/toys/${id}`, {
+          method: 'DELETE'
+        })
+      .then(response => response.json())
+      .then(data => {
+        return console.log(`Delete successful`)
+        })
+        
+    toyCard.remove()
   }
 })
 
